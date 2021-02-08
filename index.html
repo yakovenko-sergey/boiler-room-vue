@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Boiler room temperature</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body>
+<div class="parent-container">
+    <div class="parametr-container"  v-for="(text,index) in textsArr">
+            <div class="text_parametr"><p value="textParam">{{text['text']}}</p></div>
+            <div class="value-parametr-block">
+                <div class="T1" ><p id="Temp-Press-Style">{{param[index]}}</p></div>
+                <div class="temp_ed">°C</div>
+            </div>
+        <div class="border_div"></div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    (function(){
+        var val=new Vue({
+            el: ".parent-container",
+            data: {
+                address:{
+                    Object_1:['T1','T2','T3'],
+                    Objecy_2:['T1','T3','T5']
+                },
+                textsParam:{
+                    T1: {
+                        text:"Hot water temperature", id:"T1"
+                    },
+                    T2: {
+                        text:"Boiler temperature", id:"T2"
+                    },
+                    T3: {
+                        text:"Storage temperature", id:"T3"
+                    },
+                    T4: {
+                        text:"Outside temperature", id:"T4"
+                    },
+                    T5: {
+                        text:"Inside temperature", id:"T5"
+                    }
+                },
+                textsArr:[],
+                param: []
+            },
+            mounted(){
+                let self = this;
+                self.getParam();
+                this.address['Object_1'].forEach(parId=>{
+                    this.textsArr.push(this.textsParam[parId]);
+                    this.param.push('-');
+                });
+                 setInterval(function(){
+                    self.getParam();
+                },2000)
+
+            },
+            methods:{
+                /*///////////Server response emulation//////////*/
+                getParam: function(){
+                    var randValue=[];
+                    let randIteration = Math.floor(1 + Math.random() * (3 + 1 - 1));
+                    for (let i=0; i<randIteration;i++){
+                        randValue[i]=Math.floor(1 + Math.random() * (80 + 1 - 1));
+                    }
+                    this.param=randValue;
+                }
+            },
+        });
+    })();
+</script>
+
+<style>
+    .parametr-container{
+        display: grid;
+        grid-template-rows: auto;
+        grid-template-columns: 7fr 2fr;
+        grid-template-areas:
+                'text val';
+        align-self: center;
+        align-items: center;
+        grid-gap: 5px;
+    }
+
+    .text_parametr{
+        font-family: RobotoCondensedRegular;
+        font-style: italic;
+        font-size: 18px;
+        color: #000;
+        width: 78%;
+        height: auto;
+        padding-top: 8px;
+        grid-area: text;
+    }
+
+    .value-parametr-block{
+        display:grid;
+        grid-template-rows: 1fr;
+        grid-template-columns:1fr 1fr 1fr 1fr;
+        align-items: center;
+        grid-area: val;
+    }
+
+    #Temp-Press-Style{
+        font-size: 18px;
+        color: #000;
+        background: #7feb00;
+        min-width: 70px;
+        text-align: center;
+        height: 25px;
+        padding: 8px 4px 0px 4px;
+        box-shadow: 1px 1px 3px rgba(0,0,0, 0.5);
+    }
+</style>
+</body>
+</html>
