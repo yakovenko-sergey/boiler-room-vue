@@ -8,9 +8,9 @@
 <body>
 <div class="parent-container">
     <div class="parametr-container"  v-for="(text,index) in textsArr">
-            <div class="text_parametr"><p value="textParam">{{text['text']}}</p></div>
+            <div class="text_parametr"><p value="textsParam">{{text['text']}}</p></div>
             <div class="value-parametr-block">
-                <div class="T1" ><p id="Temp-Press-Style">{{param[index]}}</p></div>
+                <div><p id="Temp-Press-Style" v-bind:idparam="param[text['id']]['idparam']">{{param[text['id']]['value']}}-{{param[text['id']]['idparam']}}</p></div>
                 <div class="temp_ed">°C</div>
             </div>
         <div class="border_div"></div>
@@ -45,19 +45,17 @@
                     }
                 },
                 textsArr:[],
-                param: []
+                param: [{
+                    idparam:[],
+                    value:[]
+                }]
             },
             mounted(){
                 let self = this;
-                self.getParam();
-                this.address['Object_1'].forEach(parId=>{
-                    this.textsArr.push(this.textsParam[parId]);
-                    this.param.push('-');
-                });
+                self.firstStart();
                  setInterval(function(){
                     self.getParam();
                 },2000)
-
             },
             methods:{
                 /*///////////Server response emulation//////////*/
@@ -65,9 +63,22 @@
                     var randValue=[];
                     let randIteration = Math.floor(1 + Math.random() * (3 + 1 - 1));
                     for (let i=0; i<randIteration;i++){
-                        randValue[i]=Math.floor(1 + Math.random() * (80 + 1 - 1));
+                        let randParamId ='T'+(Math.floor(1 + Math.random() * (3 + 1 - 1)));
+                        randValue[randParamId]={idparam:randParamId, value:Math.floor(1 + Math.random() * (80 + 1 - 1))};
                     }
                     this.param=randValue;
+                    console.log(this.param);
+                },
+                firstStart: function(){
+                    this.address['Object_1'].forEach(parId=>{
+                        this.textsArr.push(this.textsParam[parId]);
+                        var randValue=[];
+                        for (let i=0; i<3;i++){
+                            let randParamId ='T'+(i+1);
+                            randValue['T'+(i+1)]={idparam:randParamId, value:Math.floor(3 + Math.random() * (80 + 1 - 1))};
+                        }
+                        this.param=randValue;
+                    });
                 }
             },
         });
