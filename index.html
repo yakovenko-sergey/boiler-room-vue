@@ -7,82 +7,92 @@
 </head>
 <body>
 <div class="parent-container">
-    <div class="parametr-container"  v-for="(text,index) in textsArr">
-            <div class="text_parametr"><p value="textsParam">{{text['text']}}</p></div>
-            <div class="value-parametr-block">
-                <div><p id="Temp-Press-Style" v-bind:idparam="param[text['id']]['idparam']">{{param[text['id']]['value']}}-{{param[text['id']]['idparam']}}</p></div>
-                <div class="temp_ed">°C</div>
-            </div>
-        <div class="border_div"></div>
-    </div>
+    <temp v-for="text in textsArr" :key="text.text" :data="text" />
 </div>
 
 
+
 <script type="text/javascript">
-    (function(){
-        var val=new Vue({
+    Vue.component('Temp', {
+        template: `<div>{{ data.text }} : {{ data.value }}</div>`,
+        props: {
+            data: {
+                type: Object,
+                required: true
+            }
+        }
+    });
+
+      var vm=new Vue({
             el: ".parent-container",
             data: {
                 address:{
                     Object_1:['T1','T2','T3'],
-                    Objecy_2:['T1','T3','T5']
+                    Object_2:['T1','T3','T5']
                 },
-                textsParam:{
+                temps: {
                     T1: {
-                        text:"Hot water temperature", id:"T1"
+                        text:"Hot water temperature",
+                        value: 0,
+                        id: 'T1'
                     },
                     T2: {
-                        text:"Boiler temperature", id:"T2"
+                        text:"Boiler temperature",
+                        value: 0,
+                        id: 'T2'
                     },
                     T3: {
-                        text:"Storage temperature", id:"T3"
+                        text:"Storage temperature",
+                        value: 0,
+                        id: 'T3'
                     },
                     T4: {
-                        text:"Outside temperature", id:"T4"
+                        text:"Outside temperature",
+                        value: 0,
+                        id: 'T3'
                     },
                     T5: {
-                        text:"Inside temperature", id:"T5"
+                        text:"Inside temperature",
+                        value: 0,
+                        id: 'T4'
                     }
                 },
-                textsArr:[],
-                param: [{
-                    idparam:[],
-                    value:[]
-                }]
+                textsArr:{
+
+                },
             },
-            mounted(){
-                let self = this;
-                self.firstStart();
-                 setInterval(function(){
-                    self.getParam();
-                },2000)
-            },
-            methods:{
+          mounted(){
+             // this.firstStart();
+          },
+          methods:{
                 /*///////////Server response emulation//////////*/
-                getParam: function(){
-                    var randValue=[];
+                getParam () {
+                    const randValue={};
                     let randIteration = Math.floor(1 + Math.random() * (3 + 1 - 1));
-                    for (let i=0; i<randIteration;i++){
+                    for (let i=1; i<randIteration;i++){
                         let randParamId ='T'+(Math.floor(1 + Math.random() * (3 + 1 - 1)));
-                        randValue[randParamId]={idparam:randParamId, value:Math.floor(1 + Math.random() * (80 + 1 - 1))};
+                        randValue[randParamId]={value:Math.floor(1 + Math.random() * (80 + 1 - 1))};
                     }
-                    this.param=randValue;
-                    console.log(this.param);
+                    for (const key in randValue){
+                     //   Vue.set(vm.textsArr[key], 'value', randValue[key].value);
+                        this.textsArr[key].value=randValue[key].value;
+      //                  console.log(this.textsArr['T1']['value']);
+                    }
                 },
-                firstStart: function(){
+                firstStart (){
+                    const res={};
                     this.address['Object_1'].forEach(parId=>{
-                        this.textsArr.push(this.textsParam[parId]);
-                        var randValue=[];
-                        for (let i=0; i<3;i++){
-                            let randParamId ='T'+(i+1);
-                            randValue['T'+(i+1)]={idparam:randParamId, value:Math.floor(3 + Math.random() * (80 + 1 - 1))};
-                        }
-                        this.param=randValue;
+                        Vue.set(this.textsArr, parId);
+                        this.textsArr[parId] = Object.assign({}, this.textsArr, { text: this.temps[parId]['text'], value: '-' });
                     });
-                }
+                    console.log(this.textsArr);
+                },
             },
+            created () {
+                this.firstStart();
+                setInterval(() => this.getParam(), 2000)
+            }
         });
-    })();
 </script>
 
 <style>
