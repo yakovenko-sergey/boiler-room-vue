@@ -23,76 +23,71 @@
         }
     });
 
-      var vm=new Vue({
-            el: ".parent-container",
-            data: {
-                address:{
-                    Object_1:['T1','T2','T3'],
-                    Object_2:['T1','T3','T5']
+    var vm=new Vue({
+        el: ".parent-container",
+        data: {
+            address:{
+                Object_1:['T1','T2','T3'],
+                Object_2:['T1','T3','T5']
+            },
+            temps: {
+                T1: {
+                    text:"Hot water temperature",
+                    value: 0,
+                    id: 'T1'
                 },
-                temps: {
-                    T1: {
-                        text:"Hot water temperature",
-                        value: 0,
-                        id: 'T1'
-                    },
-                    T2: {
-                        text:"Boiler temperature",
-                        value: 0,
-                        id: 'T2'
-                    },
-                    T3: {
-                        text:"Storage temperature",
-                        value: 0,
-                        id: 'T3'
-                    },
-                    T4: {
-                        text:"Outside temperature",
-                        value: 0,
-                        id: 'T3'
-                    },
-                    T5: {
-                        text:"Inside temperature",
-                        value: 0,
-                        id: 'T4'
-                    }
+                T2: {
+                    text:"Boiler temperature",
+                    value: 0,
+                    id: 'T2'
                 },
-                textsArr:{
+                T3: {
+                    text:"Storage temperature",
+                    value: 0,
+                    id: 'T3'
+                },
+                T4: {
+                    text:"Outside temperature",
+                    value: 0,
+                    id: 'T3'
+                },
+                T5: {
+                    text:"Inside temperature",
+                    value: 0,
+                    id: 'T4'
+                }
+            },
+            textsArr:{
 
-                },
             },
-          mounted(){
-             // this.firstStart();
-          },
-          methods:{
-                /*///////////Server response emulation//////////*/
-                getParam () {
-                    const randValue={};
-                    let randIteration = Math.floor(1 + Math.random() * (3 + 1 - 1));
-                    for (let i=1; i<randIteration;i++){
-                        let randParamId ='T'+(Math.floor(1 + Math.random() * (3 + 1 - 1)));
-                        randValue[randParamId]={value:Math.floor(1 + Math.random() * (80 + 1 - 1))};
-                    }
-                    for (const key in randValue){
-                     //   Vue.set(vm.textsArr[key], 'value', randValue[key].value);
-                        this.textsArr[key].value=randValue[key].value;
-      //                  console.log(this.textsArr['T1']['value']);
-                    }
-                },
-                firstStart (){
-                    const res={};
-                    this.address['Object_1'].forEach(parId=>{
-                        Vue.set(this.textsArr, parId);
-                        this.textsArr[parId] = Object.assign({}, this.textsArr, { text: this.temps[parId]['text'], value: '-' });
-                    });
-                    console.log(this.textsArr);
-                },
+        },
+        methods:{
+            /*///////////Server response emulation//////////*/
+            getParam () {
+                const randValue={};
+                let randIteration = Math.floor(1 + Math.random() * (3 + 1 - 1));
+                for (let i=1; i<randIteration;i++){
+                    let randParamId ='T'+(Math.floor(1 + Math.random() * (3 + 1 - 1)));
+                    randValue[randParamId]={value:Math.floor(1 + Math.random() * (80 + 1 - 1))};
+                }
+                for (const key in randValue){
+                    this.textsArr[key].value=randValue[key].value;
+                }
             },
-            created () {
-                this.firstStart();
-                setInterval(() => this.getParam(), 2000)
-            }
-        });
+            firstStart (){
+                const res={};
+                this.address['Object_1'].forEach(parId=>{
+                    Vue.set(this.textsArr, parId);
+                    this.textsArr[parId] = Object.assign({}, this.textsArr, { text: this.temps[parId]['text'], value: '-' });
+                });
+                console.log(this.textsArr);
+            },
+        },
+        created () {
+            this.firstStart();
+            setInterval(() => this.getParam(), 2000)
+        }
+    });
 </script>
 
 <style>
